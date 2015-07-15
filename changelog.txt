@@ -1,3 +1,6 @@
+## Version 1.2 (15/07/2015) ##
+[+] Modification de la taille et du nombre maximum de caractères autorisés dans la zone de saisie du capcha
+
 ## Version 1.1 (07/07/2015) ##
 {+] Changement de nom du plugin: plxMyCapchaImage à la place de plxcapchaimage
 [+] Prise en compte de la saisie du capcha en minuscule uniquement

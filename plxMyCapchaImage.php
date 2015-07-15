@@ -20,6 +20,8 @@ class plxMyCapchaImage extends plxPlugin {
 		$this->addHook('plxShowCapchaQ', 'plxShowCapchaQ');
 		$this->addHook('plxShowCapchaR', 'plxShowCapchaR');
 		$this->addHook('plxMotorNewCommentaire', 'plxMotorNewCommentaire');
+		$this->addHook('IndexEnd', 'IndexEnd');
+
 	}
 
 	/**
@@ -61,7 +63,6 @@ class plxMyCapchaImage extends plxPlugin {
 	 * @return	string		code du capcha
 	 * @author	Stéphane F.
 	 **/
-
 	private function getCode($length) {
 		$chars = '23456789abcdefghjklmnpqrstuvwxyz'; // Certains caractères ont été enlevés car ils prêtent à confusion
 		$rand_str = '';
@@ -71,5 +72,20 @@ class plxMyCapchaImage extends plxPlugin {
 		return strtolower($rand_str);
 	}
 
+	/**
+	 * Méthode qui modifie la taille et le nombre maximum de caractères autorisés dans la zone de saisie du capcha
+	 *
+	 * @return	stdio
+	 * @author	Stéphane F.
+	 **/
+	public function IndexEnd() {
+		echo '<?php
+			if($o = preg_match("/<input\s+.*?name=[\'\"]rep[\'\"].*?>/is", $output, $m)) {
+				$o = preg_replace("/maxlength=[\'\"][0-9]+[\'\"]/is", "maxlength=\"5\"", $m[0]);
+				$o = preg_replace("/size=[\'\"][0-9]+[\'\"]/is", "size=\"5\"", $o);
+				$output = str_replace($m[0], $o, $output);
+			}
+		?>';
+	}
 }
 ?>
