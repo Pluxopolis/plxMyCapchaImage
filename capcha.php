@@ -25,7 +25,7 @@ if ($dh = opendir(ABSPATH.'images')) {
 	closedir($dh);
 }
 
-# Création de l'image de fond du capcha
+# CrÃ©ation de l'image de fond du capcha
 $image = imagecreatefrompng($images[array_rand($images)]);
 
 # tableau des couleurs pour les lettres. imagecolorallocate() retourne un identifiant de couleur.
@@ -37,15 +37,15 @@ $colors=array(
 	imagecolorallocate($image, 255,123,123)
 );
 
-# Retourne de façon aléatoire une donnée d'un tableau
+# Retourne de faÃ§on alÃ©atoire une donnÃ©e d'un tableau
 function random($tab) {
 	return $tab[array_rand($tab)];
 }
 
-# récupération du code du capcha en variable de session
+# rÃ©cupÃ©ration du code du capcha en variable de session
 $theCode = $_SESSION['capcha'];
 
-# imagettftext(image, taille police, angle inclinaison, coordonnée X, coordonnée Y, couleur, police, texte) écrit le texte sur l'image.
+# imagettftext(image, taille police, angle inclinaison, coordonnÃ©e X, coordonnÃ©e Y, couleur, police, texte) Ã©crit le texte sur l'image.
 imagettftext($image, 28, rand(-10, 10),  0,  37, random($colors), random($fonts), substr($theCode,0,1));
 imagettftext($image, 28, rand(-10, 10), 37,  37, random($colors), random($fonts), substr($theCode,1,1));
 imagettftext($image, 28, rand(-10, 10), 60,  37, random($colors), random($fonts), substr($theCode,2,1));
@@ -53,10 +53,8 @@ imagettftext($image, 28, rand(-10, 10), 100, 37, random($colors), random($fonts)
 imagettftext($image, 28, rand(-10, 10), 120, 37, random($colors), random($fonts), substr($theCode,4,1));
 
 # Envoi de l'image
-ob_start();
 header('Content-Type: image/png');
 imagepng($image);
 imagedestroy($image);
-echo ob_get_clean();
 exit;
 ?>

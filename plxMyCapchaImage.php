@@ -9,7 +9,7 @@ class plxMyCapchaImage extends plxPlugin {
 	 * Constructeur de la classe
 	 *
 	 * @return	null
-	 * @author	Stéphane F.
+	 * @author	StÃ©phane F.
 	 **/
 	public function __construct($default_lang) {
 
@@ -20,51 +20,55 @@ class plxMyCapchaImage extends plxPlugin {
 		$this->addHook('plxShowCapchaQ', 'plxShowCapchaQ');
 		$this->addHook('plxShowCapchaR', 'plxShowCapchaR');
 		$this->addHook('plxMotorNewCommentaire', 'plxMotorNewCommentaire');
+		$this->addHook('ThemeEndHead', 'ThemeEndHead');
 		$this->addHook('IndexEnd', 'IndexEnd');
 
 	}
 
 	/**
-	 * Méthode qui affiche l'image du capcha
+	 * MÃ©thode qui affiche l'image du capcha
 	 *
 	 * @return	stdio
-	 * @author	Stéphane F.
+	 * @author	StÃ©phane F.
 	 **/
-	public function plxShowCapchaQ() {
+	public function plxShowCapchaQ() { //'.PLX_PLUGINS.'
+		$plxMotor = plxMotor::getInstance();
+		$root = $plxMotor->urlRewrite(str_replace('./', '', PLX_PLUGINS).'plxMyCapchaImage/capcha.php');
 		$_SESSION['capcha']=$this->getCode(5);
-		echo '<img src="'.PLX_PLUGINS.'plxMyCapchaImage/capcha.php" alt="Capcha" id="capcha" /><br />';
+		echo '<img src="'.$root.'" alt="Capcha" id="capcha" />';
+		echo '<a id="capcha-reload" href="javascript:void(0)" onclick="document.getElementById(\'capcha\').src=\''.$root.'?\' + Math.random(); return false;"><img src="'.PLX_PLUGINS.'plxMyCapchaImage/reload.png" title="" /></a><br />';
 		$this->lang('L_MESSAGE');
 		echo '<?php return true; ?>'; # pour interrompre la fonction CapchaQ de plxShow
 	}
 
 	/**
-	 * Méthode qui encode le capcha en sha1 pour comparaison
+	 * MÃ©thode qui encode le capcha en sha1 pour comparaison
 	 *
 	 * @return	stdio
-	 * @author	Stéphane F.
+	 * @author	StÃ©phane F.
 	 **/
 	public function plxMotorNewCommentaire() {
 		echo '<?php $_SESSION["capcha"]=sha1($_SESSION["capcha"]); ?>';
 	}
 
 	/**
-	 * Méthode qui retourne la réponse du capcha // obsolète
+	 * MÃ©thode qui retourne la rÃ©ponse du capcha // obsolÃ¨te
 	 *
 	 * @return	stdio
-	 * @author	Stéphane F.
+	 * @author	StÃ©phane F.
 	 **/
 	public function plxShowCapchaR() {
 		echo '<?php return true; ?>';  # pour interrompre la fonction CapchaR de plxShow
 	}
 
 	/**
-	 * Méthode qui génère le code du capcha
+	 * MÃ©thode qui gÃ©nÃ¨re le code du capcha
 	 *
 	 * @return	string		code du capcha
-	 * @author	Stéphane F.
+	 * @author	StÃ©phane F.
 	 **/
 	private function getCode($length) {
-		$chars = '23456789abcdefghjklmnpqrstuvwxyz'; // Certains caractères ont été enlevés car ils prêtent à confusion
+		$chars = '23456789abcdefghjklmnpqrstuvwxyz'; // Certains caractÃ¨res ont Ã©tÃ© enlevÃ©s car ils prÃªtent Ã  confusion
 		$rand_str = '';
 		for ($i=0; $i<$length; $i++) {
 			$rand_str .= $chars{ mt_rand( 0, strlen($chars)-1 ) };
@@ -73,10 +77,10 @@ class plxMyCapchaImage extends plxPlugin {
 	}
 
 	/**
-	 * Méthode qui modifie la taille et le nombre maximum de caractères autorisés dans la zone de saisie du capcha
+	 * MÃ©thode qui modifie la taille et le nombre maximum de caractÃ¨res autorisÃ©s dans la zone de saisie du capcha
 	 *
 	 * @return	stdio
-	 * @author	Stéphane F.
+	 * @author	StÃ©phane F.
 	 **/
 	public function IndexEnd() {
 		echo '<?php
@@ -86,6 +90,16 @@ class plxMyCapchaImage extends plxPlugin {
 				$output = str_replace($m[0], $o, $output);
 			}
 		?>';
+	}
+
+	/**
+	 * MÃ©thode qui applique un effet css sur le bouton de rechargement du captcha
+	 *
+	 * @return	stdio
+	 * @author	StÃ©phane F.
+	 **/
+	public function ThemeEndHead() {
+		echo "\n\t<style>#capcha-reload:hover{opacity: 0.7; filter: alpha(opacity=70);}</style>\n";
 	}
 }
 ?>
