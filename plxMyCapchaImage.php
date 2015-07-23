@@ -84,9 +84,8 @@ class plxMyCapchaImage extends plxPlugin {
 	 **/
 	public function IndexEnd() {
 		echo '<?php
-			if($o = preg_match("/<input\s+.*?name=[\'\"]rep[\'\"].*?>/is", $output, $m)) {
-				$o = preg_replace("/maxlength=[\'\"][0-9]+[\'\"]/is", "maxlength=\"5\"", $m[0]);
-				$o = preg_replace("/size=[\'\"][0-9]+[\'\"]/is", "size=\"5\"", $o);
+			if(preg_match("/<input(?:.*?)name=[\'\"]rep[\'\"](?:.*)maxlength=([\'\"])([^\'\"]+).*>/i", $output, $m)) {
+				$o = str_replace("maxlength=".$m[1].$m[2], "maxlength=".$m[1]."5", $m[0]);
 				$output = str_replace($m[0], $o, $output);
 			}
 		?>';
