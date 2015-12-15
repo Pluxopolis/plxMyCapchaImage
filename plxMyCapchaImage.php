@@ -35,25 +35,23 @@ class plxMyCapchaImage extends plxPlugin {
 	 * @return	stdio
 	 * @author	Stéphane F.
 	 **/
-	public function plxShowCapchaQ() { //'.PLX_PLUGINS.'
+	public function plxShowCapchaQ() {
 
 		$plxMotor = plxMotor::getInstance();
 
 		$token = md5($plxMotor->aConf['clef']);
 		$_SESSION['CAPCHAIMAGE_token'] = $token;
 		$_SESSION['CAPCHAIMAGE_token_time'] = time();
-
-		$root = $plxMotor->urlRewrite(str_replace('./', '', PLX_PLUGINS).'plxMyCapchaImage/capcha.php');
-
+		$root = $plxMotor->urlRewrite(str_replace('./', '', PLX_PLUGINS).__CLASS__.'/capcha.php').'?token='.$token;
 		echo '<img src="'.$root.'" alt="Capcha" id="capcha" />';
-		echo '<a id="capcha-reload" href="javascript:void(0)" onclick="document.getElementById(\'capcha\').src=\''.$root.'&\' + Math.random(); return false;"><img src="'.PLX_PLUGINS.'plxMyCapchaImage/reload.png" title="" /></a><br />';
+		echo '<a id="capcha-reload" href="javascript:void(0)" onclick="document.getElementById(\'capcha\').src=\''.$root.'&\' + Math.random(); return false;"><img src="'.PLX_PLUGINS.'plxMyCapchaImage/reload.png" alt="" /></a><br />';
 		$this->lang('L_MESSAGE');
 		echo '<input type="hidden" name="CAPCHAIMAGE_token" value="'.$token.'" />';
 		echo '<?php return true; ?>'; # pour interrompre la fonction CapchaQ de plxShow
 	}
 
 	/**
-	 * Méthode qui encode le capcha en sha1 pour comparaison
+	 * Méthode qui effectue les tests de sécurité
 	 *
 	 * @return	stdio
 	 * @author	Stéphane F.
