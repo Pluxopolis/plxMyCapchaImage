@@ -2,6 +2,26 @@
 
 session_start();
 
+//if(!isset($_SESSION['capcha']) OR empty($_SESSION['capcha']) OR !isset($_GET['token']) OR empty($_GET['token']) OR !isset($_SESSION['CAPCHAIMAGE_token']) OR empty($_SESSION['CAPCHAIMAGE_token']) OR $_GET['token']!=$_SESSION['CAPCHAIMAGE_token']) {
+if(!isset($_GET['token']) OR empty($_GET['token']) OR !isset($_SESSION['CAPCHAIMAGE_token']) OR empty($_SESSION['CAPCHAIMAGE_token']) OR $_GET['token']!=$_SESSION['CAPCHAIMAGE_token']) {
+	header('Content-Type: image/png');
+	$image = imagecreatefrompng(dirname(__FILE__).'/spam.png');
+	imagepng($image);
+	imagedestroy($image);
+	unset($_SESSION['CAPCHAIMAGE_token']);
+	unset($_SESSION['capcha']);
+	exit;
+}
+
+function getCode($length) {
+	$chars = '23456789abcdefghjklmnpqrstuvwxyz'; // Certains caractères ont été enlevés car ils prêtent à confusion
+	$rand_str = '';
+	for ($i=0; $i<$length; $i++) {
+		$rand_str .= $chars{ mt_rand( 0, strlen($chars)-1 ) };
+	}
+	return strtolower($rand_str);
+}
+
 # Chemin absolu vers le dossier
 if (!defined('ABSPATH')) define('ABSPATH', dirname(__FILE__).'/');
 
@@ -43,7 +63,9 @@ function random($tab) {
 }
 
 # récupération du code du capcha en variable de session
-$theCode = $_SESSION['capcha'];
+//$theCode = $_SESSION['capcha'];
+
+$theCode = $_SESSION['capcha'] = getCode(5);
 
 # imagettftext(image, taille police, angle inclinaison, coordonnée X, coordonnée Y, couleur, police, texte) écrit le texte sur l'image.
 imagettftext($image, 28, rand(-10, 10),  0,  37, random($colors), random($fonts), substr($theCode,0,1));
