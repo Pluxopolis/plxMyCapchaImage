@@ -36,7 +36,7 @@ class plxMyCapchaImage extends plxPlugin {
 		$root = $plxMotor->urlRewrite(str_replace('./', '', PLX_PLUGINS).'plxMyCapchaImage/capcha.php');
 		$_SESSION['capcha']=$this->getCode(5);
 		echo '<img src="'.$root.'" alt="Capcha" id="capcha" />';
-		echo '<a id="capcha-reload" href="javascript:void(0)" onclick="document.getElementById(\'capcha\').src=\''.$root.'?\' + Math.random(); return false;"><img src="'.PLX_PLUGINS.'plxMyCapchaImage/reload.png" title="" /></a><br />';
+		echo '<a id="capcha-reload" href="javascript:void(0)" onclick="document.getElementById(\'capcha\').src=\''.$root.'?\' + Math.random(); return false;"><img src="'.PLX_PLUGINS.'plxMyCapchaImage/reload.png" alt="" /></a><br />';
 		$this->lang('L_MESSAGE');
 		echo '<?php return true; ?>'; # pour interrompre la fonction CapchaQ de plxShow
 	}
