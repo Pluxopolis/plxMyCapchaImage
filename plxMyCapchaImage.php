@@ -39,7 +39,7 @@ class plxMyCapchaImage extends plxPlugin {
 
 		$plxMotor = plxMotor::getInstance();
 
-		$token = md5($plxMotor->aConf['clef']);
+		$token = sha1(uniqid(rand(), true));
 		$_SESSION['CAPCHAIMAGE_token'] = $token;
 		$_SESSION['CAPCHAIMAGE_token_time'] = time();
 		$root = $plxMotor->urlRewrite(str_replace('./', '', PLX_PLUGINS).__CLASS__.'/capcha.php').'?token='.$token;
@@ -64,7 +64,7 @@ class plxMyCapchaImage extends plxPlugin {
 
 		if($CapchaImageMessage=="") {
 			// vérification token securité
-			if(!isset($_SESSION["CAPCHAIMAGE_token"]) OR !isset($_SESSION["CAPCHAIMAGE_token_time"]) OR $_SESSION["CAPCHAIMAGE_token"]!=md5($plxMotor->aConf["clef"])) {
+			if(strtolower($_SERVER['REQUEST_METHOD'])!= 'post' OR !isset($_SESSION["CAPCHAIMAGE_token"]) OR !isset($_POST['CAPCHAIMAGE_token']) OR !isset($_SESSION["CAPCHAIMAGE_token_time"]) OR ($_SESSION["CAPCHAIMAGE_token"]!=$_POST['CAPCHAIMAGE_token'])) {
 				$CapchaImageMessage = "SPAM SECURITY NOT VALID";
 			}
 		}

@@ -2,8 +2,7 @@
 
 session_start();
 
-//if(!isset($_SESSION['capcha']) OR empty($_SESSION['capcha']) OR !isset($_GET['token']) OR empty($_GET['token']) OR !isset($_SESSION['CAPCHAIMAGE_token']) OR empty($_SESSION['CAPCHAIMAGE_token']) OR $_GET['token']!=$_SESSION['CAPCHAIMAGE_token']) {
-if(!isset($_GET['token']) OR empty($_GET['token']) OR !isset($_SESSION['CAPCHAIMAGE_token']) OR empty($_SESSION['CAPCHAIMAGE_token']) OR $_GET['token']!=$_SESSION['CAPCHAIMAGE_token']) {
+if(strtolower($_SERVER['REQUEST_METHOD'])!= 'get' AND !isset($_GET['token']) OR empty($_GET['token']) OR !isset($_SESSION['CAPCHAIMAGE_token']) OR empty($_SESSION['CAPCHAIMAGE_token']) OR $_GET['token']!=$_SESSION['CAPCHAIMAGE_token']) {
 	header('Content-Type: image/png');
 	$image = imagecreatefrompng(dirname(__FILE__).'/spam.png');
 	imagepng($image);
