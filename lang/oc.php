@@ -2,10 +2,10 @@
 
 $LANG = array(
 
-'L_MESSAGE'			=> 'Entrez le code de l\'image',
-'L_WAIT'			=> 'Veuillez attendre %s secondes avant de soumettre votre commentaire',
-'L_CONFIG_TIMER'	=> 'Temps d\'attente entre chaque commentaire (en seconde)',
-'L_CONFIG_TIMER_OFF'=> 'Mettra la valeur 0 pour ne pas utiliser cette fonctionnalité',
+'L_MESSAGE'			=> 'Picatz lo còdi de l\'imatge',
+'L_WAIT'			=> 'Mercés d\'esperar %s segondas abans de sometre vòstre comentari',
+'L_CONFIG_TIMER'	=> 'Temps d\'espèra entre cada comentari (en segonda)',
+'L_CONFIG_TIMER_OFF'=> 'Metre la valor 0 per utilizar pas aquesta fonccionalitat',
 
 );
 ?>
