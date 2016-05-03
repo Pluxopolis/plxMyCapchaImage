@@ -16,14 +16,10 @@ class plxMyCapchaImage extends plxPlugin {
 		# Appel du constructeur de la classe plxPlugin (obligatoire)
 		parent::__construct($default_lang);
 
-		# Droits pour accèder à la page config.php du plugin
-		$this->setConfigProfil(PROFIL_ADMIN);
-
 		# Ajouts des hooks
 		$this->addHook('plxShowCapchaQ', 'plxShowCapchaQ');
 		$this->addHook('plxShowCapchaR', 'plxShowCapchaR');
 		$this->addHook('plxMotorNewCommentaire', 'plxMotorNewCommentaire');
-		$this->addHook('plxMotorDemarrageCommentSessionMessage', 'plxMotorDemarrageCommentSessionMessage');
 		$this->addHook('ThemeEndHead', 'ThemeEndHead');
 		$this->addHook('IndexEnd', 'IndexEnd');
 
@@ -35,71 +31,26 @@ class plxMyCapchaImage extends plxPlugin {
 	 * @return	stdio
 	 * @author	Stéphane F.
 	 **/
-	public function plxShowCapchaQ() {
-
+	public function plxShowCapchaQ() { //'.PLX_PLUGINS.'
 		$plxMotor = plxMotor::getInstance();
-
-		$token = sha1(uniqid(rand(), true));
-		$_SESSION['CAPCHAIMAGE_token'] = $token;
-		$_SESSION['CAPCHAIMAGE_token_time'] = time();
-		$root = $plxMotor->urlRewrite(str_replace('./', '', PLX_PLUGINS).__CLASS__.'/capcha.php').'?token='.$token;
+		$root = $plxMotor->urlRewrite(str_replace('./', '', PLX_PLUGINS).'plxMyCapchaImage/capcha.php');
+		$_SESSION['capcha_token'] = sha1(uniqid(rand(), true));
+		$_SESSION['capcha']=$this->getCode(5);
 		echo '<img src="'.$root.'" alt="Capcha" id="capcha" />';
-		echo '<a id="capcha-reload" href="javascript:void(0)" onclick="document.getElementById(\'capcha\').src=\''.$root.'&\' + Math.random(); return false;"><img src="'.PLX_PLUGINS.'plxMyCapchaImage/reload.png" alt="" /></a><br />';
+		echo '<a id="capcha-reload" href="javascript:void(0)" onclick="document.getElementById(\'capcha\').src=\''.$root.'?\' + Math.random(); return false;"><img src="'.PLX_PLUGINS.'plxMyCapchaImage/reload.png" title="" /></a><br />';
 		$this->lang('L_MESSAGE');
-		echo '<input type="hidden" name="CAPCHAIMAGE_token" value="'.$token.'" />';
+		echo '<input type="hidden" name="capcha_token" value="'.$_SESSION['capcha_token'].'" />';
 		echo '<?php return true; ?>'; # pour interrompre la fonction CapchaQ de plxShow
 	}
 
 	/**
-	 * Méthode qui effectue les tests de sécurité
+	 * Méthode qui encode le capcha en sha1 pour comparaison
 	 *
 	 * @return	stdio
 	 * @author	Stéphane F.
 	 **/
 	public function plxMotorNewCommentaire() {
-
-		$plxMotor = plxMotor::getInstance();
-
-		$CapchaImageMessage="";
-
-		if($CapchaImageMessage=="") {
-			// vérification token securité
-			if(strtolower($_SERVER['REQUEST_METHOD'])!= 'post' OR !isset($_SESSION["CAPCHAIMAGE_token"]) OR !isset($_POST['CAPCHAIMAGE_token']) OR !isset($_SESSION["CAPCHAIMAGE_token_time"]) OR ($_SESSION["CAPCHAIMAGE_token"]!=$_POST['CAPCHAIMAGE_token'])) {
-				$CapchaImageMessage = "SPAM SECURITY NOT VALID";
-			}
-		}
-		if($CapchaImageMessage=="") {
-			// vérfication du délai attente
-			$timer = $this->getParam('timer')=='' ? 0 : $this->getParam('timer');
-			$token_age = time() - $_SESSION["CAPCHAIMAGE_token_time"];
-			if($token_age < intval($timer)) {
-				$CapchaImageMessage = sprintf($this->getLang('L_WAIT'),$this->getParam('timer'));
-			}
-		}
-		if($CapchaImageMessage=="") {
-			// vérification du capcha
-			if(!isset($_SESSION["capcha"]) OR empty($_SESSION["capcha"]) OR !isset($_POST["rep"]) OR empty($_POST["rep"]) OR $_SESSION["capcha"]!=$_POST["rep"]) {
-				$CapchaImageMessage = L_NEWCOMMENT_ERR_ANTISPAM;
-			}
-		}
-		echo '<?php
-			$this->CapchaImageMessage = "'.$CapchaImageMessage.'";
-			$this->aConf["capcha"] = '.($CapchaImageMessage=="" ? 0 : 1).';
-		?>';
-	}
-
-	/**
-	 * Méthode qui renvoie le message adapté si la durée de vie du token est incorrecte
-	 *
-	 * @return	stdio
-	 * @author	Stéphane F.
-	 **/
-	public function plxMotorDemarrageCommentSessionMessage() {
-		echo '<?php
-			if(!empty($this->CapchaImageMessage)) {
-				$_SESSION["msgcom"] = $this->CapchaImageMessage;
-			}
-		?>';
+		echo '<?php $_SESSION["capcha"]=sha1($_SESSION["capcha"]); ?>';
 	}
 
 	/**
@@ -139,6 +90,10 @@ class plxMyCapchaImage extends plxPlugin {
 				$o = str_replace("maxlength=".$m[1].$m[2], "maxlength=".$m[1]."5", $m[0]);
 				$output = str_replace($m[0], $o, $output);
 			}
+			if(preg_match("/<input(?:.*?)name=[\'\"]rep[\'\"](?:.*)size=([\'\"])([^\'\"]+).*>/i", $output, $m)) {
+				$o = str_replace("size=".$m[1].$m[2], "size=".$m[1]."5", $m[0]);
+				$output = str_replace($m[0], $o, $output);
+			}			
 		?>';
 	}
 
