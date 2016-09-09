@@ -37,7 +37,7 @@ class plxMyCapchaImage extends plxPlugin {
 		$_SESSION['capcha_token'] = sha1(uniqid(rand(), true));
 		$_SESSION['capcha']=$this->getCode(5);
 		echo '<img src="'.$root.'" alt="Capcha" id="capcha" />';
-		echo '<a id="capcha-reload" href="javascript:void(0)" onclick="document.getElementById(\'capcha\').src=\''.$root.'?\' + Math.random(); return false;"><img src="'.PLX_PLUGINS.'plxMyCapchaImage/reload.png" title="" /></a><br />';
+		echo '<a id="capcha-reload" href="javascript:void(0)" onclick="document.getElementById(\'capcha\').src=\''.$root.'?\' + Math.random(); return false;"><img src="'.PLX_PLUGINS.'plxMyCapchaImage/reload.png" alt="CapchaImage" /></a><br />';
 		$this->lang('L_MESSAGE');
 		echo '<input type="hidden" name="capcha_token" value="'.$_SESSION['capcha_token'].'" />';
 		echo '<?php return true; ?>'; # pour interrompre la fonction CapchaQ de plxShow
