@@ -73,7 +73,7 @@ class plxMyCapchaImage extends plxPlugin {
 		$chars = '23456789abcdefghjklmnpqrstuvwxyz'; // Certains caractères ont été enlevés car ils prêtent à confusion
 		$rand_str = '';
 		for ($i=0; $i<$length; $i++) {
-			$rand_str .= $chars{ mt_rand( 0, strlen($chars)-1 ) };
+			$rand_str .= $chars[ mt_rand( 0, strlen($chars)-1 ) ];
 		}
 		return strtolower($rand_str);
 	}
